@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Visualizador de Dijkstra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>Camino mínimo con Dijkstra</h1>
+    <p class="sub">Grafo dirigido acíclico, ejecución paso a paso con todos los caminos mínimos.</p>
+  </header>
+
+  <details class="panel" id="pConstruccion" open>
+    <summary>Construcción del grafo</summary>
+    <div class="panel-body">
+      <div class="row">
+        <label class="fld" for="n">Nodos (7–16)
+          <input id="n" type="number" min="7" max="16" value="8" inputmode="numeric">
+        </label>
+        <div class="seg" role="radiogroup" aria-label="Modo de construcción">
+          <label><input type="radio" name="modo" value="rand" checked><span>Aleatorio</span></label>
+          <label><input type="radio" name="modo" value="man"><span>Manual</span></label>
+        </div>
+        <label class="fld" for="pesoMax" id="filaPeso">Peso máx. (vacío = 30)
+          <input id="pesoMax" type="text" inputmode="numeric" placeholder="30">
+        </label>
+        <button class="btn primary" id="btnGen" type="button">Generar grafo</button>
+      </div>
+      <div id="manual" hidden>
+        <p class="hint">Toca el nodo de salida y luego el de llegada para preparar la arista, o escríbela abajo (por ejemplo A B 5, AB5 o A-&gt;B:5).</p>
+        <div class="row" style="margin-top:8px">
+          <label class="fld grow" for="entrada" style="flex:1 1 220px">Aristas
+            <input id="entrada" class="txt" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="A B 5">
+          </label>
+          <button class="btn primary" id="btnAnadir" type="button">Añadir</button>
+          <button class="btn" id="btnQuitar" type="button">Quitar la última</button>
+          <button class="btn" id="btnLimpiar" type="button">Limpiar todo</button>
+        </div>
+      </div>
+      <p id="msg" role="status" aria-live="polite"></p>
+      <p id="listaAristas"></p>
+    </div>
+  </details>
+
+  <section class="stage" aria-label="Grafo">
+    <div class="tools">
+      <button class="btn" id="zMenos" type="button" aria-label="Alejar">−</button>
+      <button class="btn" id="zMas" type="button" aria-label="Acercar">+</button>
+      <button class="btn" id="zAjustar" type="button">Ajustar a la vista</button>
+      <span class="hint grow">Arrastra el fondo, los nodos o los pesos. Pellizca o usa la rueda para el zoom. Doble toque en un peso para editarlo.</span>
+    </div>
+    <div class="canvas" id="canvas">
+      <svg id="svg" role="img" aria-label="Grafo dirigido acíclico con pesos en las aristas"></svg>
+    </div>
+    <p id="legend"></p>
+  </section>
+
+  <section class="exec" aria-label="Ejecución">
+    <div class="row">
+      <label class="fld" for="selOrigen">Origen <select id="selOrigen"></select></label>
+      <label class="fld" for="selDestino">Destino <select id="selDestino"></select></label>
+      <button class="btn primary" id="btnEjecutar" type="button">Ejecutar Dijkstra</button>
+    </div>
+    <div class="steps">
+      <button class="btn" id="bIni" type="button" aria-label="Ir al inicio" disabled>⏮</button>
+      <button class="btn" id="bAnt" type="button" disabled>Anterior</button>
+      <button class="btn primary" id="bSig" type="button" disabled>Siguiente paso</button>
+      <button class="btn" id="bFin" type="button" aria-label="Ir al final" disabled>⏭</button>
+      <span id="etiquetaPaso"></span>
+    </div>
+  </section>
+
+  <details class="panel" id="pDetalle" open>
+    <summary>Detalle de ejecución</summary>
+    <div class="panel-body">
+      <div class="detail">
+        <div class="tbl">
+          <table>
+            <thead><tr><th>Nodo</th><th>Distancia</th><th>Predecesores</th><th>Estado</th></tr></thead>
+            <tbody id="tabla"></tbody>
+          </table>
+        </div>
+        <div class="side">
+          <ul id="log"></ul>
+          <div id="res"></div>
+        </div>
+      </div>
+    </div>
+  </details>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
